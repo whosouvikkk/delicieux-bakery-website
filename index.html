@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Délicieux — Artisan Bakery & Café</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --clay: #7B3A2A;
+    --clay-light: #A0503C;
+    --clay-dark: #5C2518;
+    --cream: #F9F3E8;
+    --cream-dark: #EDE3D0;
+    --warm-white: #FDFAF5;
+    --charcoal: #1C1412;
+    --charcoal-mid: #2E1F1A;
+    --gold: #C8963A;
+    --gold-light: #DDB96B;
+    --text-dark: #1C1412;
+    --text-mid: #4A3328;
+    --text-light: #8B7060;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Cormorant Garamond', Georgia, serif;
+    --font-ui: 'DM Sans', sans-serif;
+    --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --shadow-soft: 0 8px 40px rgba(28,20,18,0.12);
+    --shadow-hard: 0 20px 60px rgba(28,20,18,0.25);
+    --radius: 4px;
+  }
+
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--warm-white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    cursor: default;
+  }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  a { text-decoration: none; color: inherit; }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; }
+  ul { list-style: none; }
+
+  
+  .cursor { position: fixed; width: 10px; height: 10px; background: var(--clay); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s; mix-blend-mode: multiply; }
+  .cursor-follower { position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--clay); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), width 0.3s, height 0.3s, opacity 0.3s; }
+  .cursor.hover { width: 18px; height: 18px; }
+  .cursor-follower.hover { width: 56px; height: 56px; border-color: var(--gold); }
+  @media (hover: none) { .cursor, .cursor-follower { display: none; } }
+
+  
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--clay); border-radius: 10px; }
+
+  
+  #loader {
+    position: fixed; inset: 0; background: var(--charcoal); z-index: 10000;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    transition: opacity 0.8s ease, visibility 0.8s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-text {
+    font-family: var(--font-display); font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--cream); letter-spacing: 0.3em; text-transform: uppercase;
+    animation: loaderPulse 1.5s ease infinite;
+  }
+  .loader-line { width: 0; height: 1px; background: var(--gold); margin-top: 1rem; animation: loaderLine 1.8s ease forwards 0.3s; }
+  @keyframes loaderLine { to { width: 200px; } }
+  @keyframes loaderPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+  .stagger > * { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .stagger.visible > *:nth-child(1) { opacity:1;transform:translateY(0);transition-delay:0s; }
+  .stagger.visible > *:nth-child(2) { opacity:1;transform:translateY(0);transition-delay:0.1s; }
+  .stagger.visible > *:nth-child(3) { opacity:1;transform:translateY(0);transition-delay:0.2s; }
+  .stagger.visible > *:nth-child(4) { opacity:1;transform:translateY(0);transition-delay:0.3s; }
+  .stagger.visible > *:nth-child(5) { opacity:1;transform:translateY(0);transition-delay:0.4s; }
+  .stagger.visible > *:nth-child(6) { opacity:1;transform:translateY(0);transition-delay:0.5s; }
+
+  
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1.2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: var(--transition);
+  }
+  nav.scrolled {
+    background: rgba(28,20,18,0.96);
+    backdrop-filter: blur(20px);
+    padding: 0.8rem 4rem;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
+    color: var(--cream); letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--gold); font-style: italic; }
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(249,243,232,0.8);
+    position: relative; padding-bottom: 4px;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+    background: var(--gold); transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--clay); color: var(--cream) !important;
+    padding: 0.5rem 1.5rem; border-radius: 2px;
+    transition: background 0.3s !important;
+  }
+  .nav-cta:hover { background: var(--clay-light) !important; }
+  .nav-cta::after { display: none !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--cream); transition: var(--transition); }
+  .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .hamburger.active span:nth-child(2) { opacity: 0; }
+  .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+  
+  .mobile-menu {
+    position: fixed; inset: 0; background: var(--charcoal); z-index: 999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem;
+    transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .mobile-menu a { font-family: var(--font-display); font-size: 2rem; color: var(--cream); letter-spacing: 0.05em; }
+  .mobile-menu a:hover { color: var(--gold); }
+
+  
+  .hero {
+    position: relative; height: 100vh; min-height: 600px;
+    display: flex; align-items: flex-end;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1600&q=90') center/cover no-repeat;
+    transform: scale(1.1);
+    transition: transform 12s ease;
+  }
+  .hero-bg.active { transform: scale(1); }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(28,20,18,0.75) 0%, rgba(92,37,24,0.4) 50%, rgba(28,20,18,0.2) 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 5vw 8vh;
+    max-width: 700px;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold-light); border: 1px solid rgba(200,150,58,0.5);
+    padding: 0.4rem 1.2rem; margin-bottom: 1.5rem;
+    opacity: 0; transform: translateY(20px); animation: heroIn 0.8s ease forwards 1.5s;
+  }
+  .hero-title {
+    font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 900; line-height: 1.05; color: var(--cream);
+    margin-bottom: 1.5rem;
+    opacity: 0; transform: translateY(30px); animation: heroIn 1s ease forwards 1.8s;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-sub {
+    font-family: var(--font-body); font-size: clamp(1rem, 2vw, 1.3rem);
+    color: rgba(249,243,232,0.75); line-height: 1.7; margin-bottom: 2.5rem;
+    opacity: 0; transform: translateY(20px); animation: heroIn 0.8s ease forwards 2.1s;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0; transform: translateY(20px); animation: heroIn 0.8s ease forwards 2.3s;
+  }
+  @keyframes heroIn { to { opacity: 1; transform: translateY(0); } }
+
+  .btn-primary {
+    background: var(--clay); color: var(--cream);
+    padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--clay-light); transform: translateX(-101%);
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    color: var(--cream); border: 1px solid rgba(249,243,232,0.5);
+    padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; transition: var(--transition);
+  }
+  .btn-ghost:hover { background: rgba(249,243,232,0.1); border-color: var(--cream); }
+
+  .btn-gold {
+    background: var(--gold); color: var(--charcoal);
+    padding: 0.9rem 2.2rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; font-weight: 500; transition: var(--transition);
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(200,150,58,0.4); }
+
+  .scroll-indicator {
+    position: absolute; bottom: 2rem; right: 4rem; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0; animation: heroIn 0.8s ease forwards 3s;
+  }
+  .scroll-indicator span { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(249,243,232,0.5); writing-mode: vertical-rl; }
+  .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, rgba(249,243,232,0.5), transparent); animation: scrollLine 2s ease infinite; }
+  @keyframes scrollLine { 0%,100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(0.5); opacity: 0.3; } }
+
+  
+  section { padding: 6rem 5vw; }
+  .section-label {
+    font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--clay); margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::before { content: ''; display: block; width: 30px; height: 1px; background: var(--clay); }
+  .section-title {
+    font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700; line-height: 1.15; color: var(--text-dark); margin-bottom: 1rem;
+  }
+  .section-title em { font-style: italic; color: var(--clay); }
+  .section-sub {
+    font-family: var(--font-body); font-size: 1.1rem; color: var(--text-light);
+    line-height: 1.8; max-width: 500px;
+  }
+
+
+  .marquee-strip {
+    background: var(--charcoal); padding: 1rem 0; overflow: hidden;
+    border-top: 1px solid rgba(200,150,58,0.2); border-bottom: 1px solid rgba(200,150,58,0.2);
+  }
+  .marquee-track {
+    display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content;
+  }
+  .marquee-item {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 400; font-style: italic;
+    color: rgba(249,243,232,0.6); white-space: nowrap; display: flex; align-items: center; gap: 1rem;
+  }
+  .marquee-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  
+  .products-section { background: var(--cream); }
+  .products-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .product-card {
+    background: var(--warm-white); border-radius: var(--radius);
+    overflow: hidden; position: relative;
+    box-shadow: 0 4px 20px rgba(28,20,18,0.06);
+    transition: var(--transition); cursor: pointer;
+  }
+  .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hard); }
+  .product-img-wrap { height: 220px; overflow: hidden; position: relative; }
+  .product-img-wrap img { transition: transform 0.6s ease; }
+  .product-card:hover .product-img-wrap img { transform: scale(1.08); }
+  .product-overlay {
+    position: absolute; inset: 0; background: rgba(28,20,18,0.4);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .product-quick-add {
+    background: var(--clay); color: var(--cream);
+    padding: 0.6rem 1.5rem; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; transition: background 0.3s;
+    transform: translateY(10px); transition: transform 0.4s ease, background 0.3s;
+  }
+  .product-card:hover .product-quick-add { transform: translateY(0); }
+  .product-quick-add:hover { background: var(--clay-light); }
+  .product-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    background: var(--gold); color: var(--charcoal);
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.25rem 0.7rem; border-radius: 2px; font-weight: 500;
+  }
+  .product-info { padding: 1.2rem 1.5rem 1.5rem; }
+  .product-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .product-desc { font-family: var(--font-body); font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 1rem; }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--clay); }
+  .add-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--cream-dark); color: var(--text-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: var(--transition);
+  }
+  .add-btn:hover { background: var(--clay); color: var(--cream); transform: rotate(90deg); }
+
+  .promo-banner {
+    background: var(--charcoal-mid);
+    padding: 5rem 5vw;
+    position: relative; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 4rem;
+    min-height: 380px;
+  }
+  .promo-banner::before {
+    content: ''; position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=1400&q=80') center/cover no-repeat;
+    opacity: 0.15;
+  }
+  .promo-content { position: relative; z-index: 1; }
+  .promo-percent {
+    font-family: var(--font-display); font-size: clamp(5rem, 12vw, 10rem);
+    font-weight: 900; color: var(--gold); line-height: 1; display: block;
+    text-shadow: 0 0 80px rgba(200,150,58,0.4);
+  }
+  .promo-title { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: var(--cream); margin-bottom: 1rem; font-style: italic; }
+  .promo-text { font-family: var(--font-body); color: rgba(249,243,232,0.6); line-height: 1.7; margin-bottom: 2rem; font-size: 1.05rem; }
+  .promo-img { position: relative; z-index: 1; height: 280px; border-radius: 4px; overflow: hidden; }
+  .promo-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to left, transparent, rgba(46,31,26,0.6)); }
+
+  
+  .explore-section { background: var(--warm-white); }
+  .category-tabs { display: flex; gap: 0; margin-bottom: 2.5rem; border-bottom: 1px solid var(--cream-dark); flex-wrap: wrap; }
+  .tab-btn {
+    font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-light); padding: 0.8rem 1.5rem;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: var(--transition); cursor: pointer;
+  }
+  .tab-btn.active, .tab-btn:hover { color: var(--clay); border-bottom-color: var(--clay); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 220px);
+    gap: 1rem;
+  }
+  .gallery-item {
+    overflow: hidden; border-radius: var(--radius); position: relative; cursor: pointer;
+    transition: transform 0.4s ease; display: none;
+  }
+  .gallery-item.active { display: block; }
+  .gallery-item::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(28,20,18,0.6) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .gallery-item:hover::after { opacity: 1; }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item img { transition: transform 0.6s ease; }
+  .gallery-item:hover img { transform: scale(1.1); }
+  .gallery-label {
+    position: absolute; bottom: 1rem; left: 1rem; z-index: 1;
+    font-family: var(--font-display); font-size: 1rem; color: var(--cream);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .gallery-item:hover .gallery-label { opacity: 1; }
+
+  .about-section {
+    background: var(--charcoal);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; padding: 0; min-height: 500px;
+  }
+  .about-img { position: relative; min-height: 400px; }
+  .about-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 60%, var(--charcoal)); }
+  .about-content {
+    padding: 6rem 5vw; display: flex; flex-direction: column; justify-content: center;
+  }
+  .about-section .section-label { color: var(--gold); }
+  .about-section .section-label::before { background: var(--gold); }
+  .about-section .section-title { color: var(--cream); }
+  .about-section .section-sub { color: rgba(249,243,232,0.6); max-width: 100%; margin-bottom: 2rem; }
+  .about-stats { display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; }
+  .stat { border-left: 2px solid var(--gold); padding-left: 1rem; }
+  .stat-num { font-family: var(--font-display); font-size: 2.5rem; color: var(--gold); font-weight: 700; display: block; line-height: 1; }
+  .stat-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(249,243,232,0.5); }
+
+  
+  .featured-section { background: var(--cream); }
+  .featured-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem;
+  }
+  .featured-card {
+    position: relative; border-radius: 4px; overflow: hidden;
+    height: 320px; cursor: pointer;
+  }
+  .featured-card img { transition: transform 0.6s ease; }
+  .featured-card:hover img { transform: scale(1.1); }
+  .featured-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(28,20,18,0.9) 0%, transparent 100%);
+    padding: 2rem 1.5rem 1.5rem;
+    transform: translateY(30%); transition: transform 0.4s ease;
+  }
+  .featured-card:hover .featured-info { transform: translateY(0); }
+  .featured-name { font-family: var(--font-display); font-size: 1.2rem; color: var(--cream); font-weight: 600; margin-bottom: 0.3rem; }
+  .featured-price { color: var(--gold-light); font-size: 1rem; }
+  .featured-btn {
+    margin-top: 0.8rem; background: var(--clay); color: var(--cream);
+    padding: 0.5rem 1.2rem; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 2px; display: inline-block; transition: background 0.3s;
+  }
+  .featured-btn:hover { background: var(--clay-light); }
+
+  
+  .cta-section {
+    background: url('https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=1600&q=85') center/cover fixed no-repeat;
+    position: relative; padding: 8rem 5vw;
+    text-align: center;
+  }
+  .cta-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(28,20,18,0.78);
+  }
+  .cta-content { position: relative; z-index: 1; }
+  .cta-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.5rem); color: var(--cream); margin-bottom: 1rem; }
+  .cta-title em { color: var(--gold-light); font-style: italic; }
+  .cta-sub { font-family: var(--font-body); font-size: 1.2rem; color: rgba(249,243,232,0.7); margin-bottom: 3rem; }
+  .cta-btns { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+
+  
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(28,20,18,0.8);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s;
+    padding: 1rem;
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal {
+    background: var(--warm-white); width: 100%; max-width: 540px;
+    border-radius: 4px; overflow: hidden;
+    transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+  .modal-header {
+    background: var(--charcoal); padding: 2rem 2rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--cream); }
+  .modal-title span { color: var(--gold); font-style: italic; }
+  .modal-close { font-size: 1.5rem; color: rgba(249,243,232,0.5); transition: color 0.3s; }
+  .modal-close:hover { color: var(--cream); }
+  .modal-body { padding: 2rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-mid); display: block; margin-bottom: 0.4rem; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; border: 1px solid var(--cream-dark); border-radius: 2px;
+    padding: 0.75rem 1rem; font-family: var(--font-ui); font-size: 0.9rem; color: var(--text-dark);
+    background: var(--cream); transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none; border-color: var(--clay); box-shadow: 0 0 0 3px rgba(123,58,42,0.1);
+  }
+  .form-textarea { resize: vertical; min-height: 100px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-submit { width: 100%; margin-top: 0.5rem; }
+  .success-msg { text-align: center; padding: 1rem 0; }
+  .success-msg .check { font-size: 3rem; margin-bottom: 1rem; }
+  .success-msg h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .success-msg p { font-family: var(--font-body); color: var(--text-light); }
+
+  
+  footer {
+    background: var(--charcoal); color: var(--cream);
+    padding: 5rem 5vw 2rem;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 4rem; }
+  .footer-brand .nav-logo { font-size: 2rem; display: block; margin-bottom: 1rem; }
+  .footer-brand p { font-family: var(--font-body); font-size: 1rem; color: rgba(249,243,232,0.5); line-height: 1.8; margin-bottom: 1.5rem; }
+  .social-links { display: flex; gap: 0.8rem; }
+  .social-link {
+    width: 36px; height: 36px; border: 1px solid rgba(249,243,232,0.2);
+    display: flex; align-items: center; justify-content: center; border-radius: 50%;
+    color: rgba(249,243,232,0.5); transition: var(--transition); font-size: 0.9rem;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); }
+  .footer-col h4 { font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+  .footer-col ul { display: flex; flex-direction: column; gap: 0.8rem; }
+  .footer-col ul a { font-family: var(--font-body); font-size: 1rem; color: rgba(249,243,232,0.5); transition: color 0.3s; }
+  .footer-col ul a:hover { color: var(--cream); }
+  .footer-contact p { font-family: var(--font-body); font-size: 1rem; color: rgba(249,243,232,0.5); line-height: 1.8; }
+  .footer-contact strong { color: rgba(249,243,232,0.8); }
+  .footer-bottom { border-top: 1px solid rgba(249,243,232,0.08); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-bottom p { font-size: 0.8rem; color: rgba(249,243,232,0.3); }
+
+  
+  .cart-toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 3000;
+    background: var(--charcoal); color: var(--cream);
+    padding: 1rem 1.5rem; border-radius: 4px;
+    display: flex; align-items: center; gap: 1rem;
+    transform: translateX(calc(100% + 3rem)); transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: var(--shadow-hard);
+  }
+  .cart-toast.show { transform: translateX(0); }
+  .cart-toast-icon { color: var(--gold); font-size: 1.2rem; }
+  .cart-toast p { font-size: 0.85rem; }
+  .cart-toast strong { color: var(--gold); }
+  .cart-float {
+    position: fixed; top: 50%; right: 1.5rem; transform: translateY(-50%);
+    background: var(--clay); color: var(--cream); width: 48px; height: 48px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; box-shadow: var(--shadow-soft); z-index: 500;
+    transition: transform 0.3s; cursor: pointer;
+  }
+  .cart-float:hover { transform: translateY(-50%) scale(1.1); }
+  .cart-count {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--gold); color: var(--charcoal);
+    width: 18px; height: 18px; border-radius: 50%; font-size: 0.65rem;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+    opacity: 0; transition: opacity 0.3s, transform 0.3s;
+  }
+  .cart-count.show { opacity: 1; transform: scale(1.2); }
+
+
+  @media (max-width: 1024px) {
+    nav { padding: 1rem 2rem; }
+    nav.scrolled { padding: 0.7rem 2rem; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav.scrolled { padding: 0.7rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 4rem 4vw; }
+    .hero-content { padding: 0 4vw 10vh; }
+    .scroll-indicator { display: none; }
+    .products-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 180px); }
+    .about-section { grid-template-columns: 1fr; }
+    .about-img { min-height: 300px; }
+    .about-img::after { background: linear-gradient(to top, var(--charcoal) 0%, transparent 50%); }
+    .about-content { padding: 3rem 4vw; }
+    .promo-banner { grid-template-columns: 1fr; }
+    .promo-img { height: 200px; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .featured-card { height: 260px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-btns { flex-direction: column; }
+    .hero-btns .btn-primary, .hero-btns .btn-ghost { width: 100%; text-align: center; }
+    .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .gallery-item { height: 200px; }
+    .promo-percent { font-size: 5rem; }
+    .about-stats { gap: 1.5rem; }
+    .cta-btns { flex-direction: column; align-items: center; }
+    .category-tabs { gap: 0; }
+    .tab-btn { padding: 0.6rem 1rem; font-size: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<div id="loader">
+  <div class="loader-text">Délicieux</div>
+  <div class="loader-line"></div>
+</div>
+
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+
+<nav id="navbar">
+  <a class="nav-logo" href="#"><span>Déli</span>cieux</a>
+  <ul class="nav-links">
+    <li><a href="#products">Menu</a></li>
+    <li><a href="#explore">Gallery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" class="nav-cta" onclick="openOrderModal(event)">Order Now</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#products" onclick="closeMobileMenu()">Menu</a>
+  <a href="#explore" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="#" onclick="openOrderModal(event); closeMobileMenu()">Order Now</a>
+</div>
+
+
+<section class="hero" id="home">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Artisan Bakery & Café · Est. 2008</div>
+    <h1 class="hero-title">Sweet Treats,<br><em>Perfect Eats</em></h1>
+    <p class="hero-sub">Handcrafted with love, baked to perfection. Every loaf, every pastry, every bite tells a story of tradition and passion.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary"><span>Explore Menu</span></a>
+      <a href="#" class="btn-ghost" onclick="openBookingModal(event)">Book a Table</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+
+<div class="marquee-strip">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+
+<section class="products-section" id="products">
+  <div class="products-header reveal">
+    <div>
+      <div class="section-label">Our Specialties</div>
+      <h2 class="section-title">Top <em>Products</em></h2>
+    </div>
+    <p class="section-sub" style="max-width:340px;font-size:1rem;">Each item is baked fresh every morning using locally sourced, premium ingredients.</p>
+  </div>
+  <div class="products-grid stagger" id="productsGrid"></div>
+</section>
+
+
+<div class="promo-banner reveal">
+  <div class="promo-content">
+    <span class="promo-percent">20%</span>
+    <h3 class="promo-title">Off Your First Order</h3>
+    <p class="promo-text">Sign up today and enjoy an exclusive discount on your first artisan order. Fresh-baked, delivered to your door.</p>
+    <a href="#" class="btn-gold" onclick="openOrderModal(event)">Claim Offer</a>
+  </div>
+  <div class="promo-img reveal-right">
+    <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=800&q=85" alt="Artisan breads" loading="lazy">
+  </div>
+</div>
+
+
+<section class="explore-section" id="explore">
+  <div class="reveal" style="margin-bottom:2rem;">
+    <div class="section-label">Fresh Daily</div>
+    <h2 class="section-title">Explore <em>More</em></h2>
+  </div>
+  <div class="category-tabs" id="categoryTabs"></div>
+  <div class="gallery-grid stagger" id="galleryGrid"></div>
+</section>
+
+
+<div class="about-section" id="about">
+  <div class="about-img reveal-left">
+    <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=85" alt="Baker at work" loading="lazy">
+  </div>
+  <div class="about-content reveal-right">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-title">About <em>Us</em></h2>
+    <p class="section-sub">Since 2008, Délicieux has been the heart of the neighborhood — a place where the smell of fresh bread, the warmth of the oven, and the joy of sharing bring people together. Every recipe is a labor of love.</p>
+    <p class="section-sub" style="margin-top:1rem;">We source our flour from heritage wheat farms, use free-range eggs, and only the finest Belgian chocolate. Because you deserve nothing less.</p>
+    <div class="about-stats stagger">
+      <div class="stat"><span class="stat-num">16</span><span class="stat-label">Years Baking</span></div>
+      <div class="stat"><span class="stat-num">80+</span><span class="stat-label">Recipes</span></div>
+      <div class="stat"><span class="stat-num">12K</span><span class="stat-label">Happy Clients</span></div>
+    </div>
+  </div>
+</div>
+
+
+<section class="featured-section" id="contact">
+  <div class="reveal">
+    <div class="section-label">Not To Miss</div>
+    <h2 class="section-title">Featured <em>Treats</em></h2>
+  </div>
+  <div class="featured-grid stagger" id="featuredGrid"></div>
+</section>
+
+
+<section class="cta-section">
+  <div class="cta-content reveal">
+    <div class="section-label" style="justify-content:center;color:var(--gold-light);">
+      <span style="background:var(--gold-light);"></span>Ready to Taste
+    </div>
+    <h2 class="cta-title">Come Visit or <em>Order Online</em></h2>
+    <p class="cta-sub">Fresh from the oven, straight to your table or door.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary" onclick="openOrderModal(event)"><span>Order Now</span></a>
+      <a href="#" class="btn-ghost" onclick="openBookingModal(event)">Book a Table</a>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo"><span>Déli</span>cieux</span>
+      <p>Artisan bakery crafting happiness one loaf at a time. Visit us or order online — fresh bakes await.</p>
+      <div class="social-links">
+        <a class="social-link" href="#" aria-label="Facebook">f</a>
+        <a class="social-link" href="#" aria-label="Instagram">in</a>
+        <a class="social-link" href="#" aria-label="Twitter">𝕏</a>
+        <a class="social-link" href="#" aria-label="Pinterest">P</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#products">Menu</a></li>
+        <li><a href="#explore">Gallery</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recent News</h4>
+      <ul>
+        <li><a href="#">New sourdough range launched</a></li>
+        <li><a href="#">Seasonal pastry series</a></li>
+        <li><a href="#">Croissant masterclass</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact footer-col">
+      <h4>Find Us</h4>
+      <p><strong>Address:</strong><br>42 Bread Lane, New York, NY 10001</p>
+      <p style="margin-top:0.8rem;"><strong>Phone:</strong><br>(456) 789-1231</p>
+      <p style="margin-top:0.8rem;"><strong>Hours:</strong><br>Mon–Sat: 7am – 8pm<br>Sun: 8am – 6pm</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Délicieux Artisan Bakery. All rights reserved.</p>
+    <p>Crafted with ♥ and flour</p>
+  </div>
+</footer>
+
+
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Place Your <span>Order</span></h3>
+      <button class="modal-close" onclick="closeModal('orderModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="orderFormWrap">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your name" id="orderName">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="you@email.com" id="orderEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" placeholder="+1 234 567 890" id="orderPhone">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Address</label>
+          <input class="form-input" type="text" placeholder="Street address" id="orderAddress">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Select Items</label>
+          <select class="form-select" id="orderItem">
+            <option value="">Choose an item...</option>
+            <option>Sourdough Loaf — $8.50</option>
+            <option>Almond Croissant — $5.50</option>
+            <option>Blueberry Muffin — $4.00</option>
+            <option>Honey Brioche — $9.00</option>
+            <option>Fruit Tart — $7.50</option>
+            <option>Chocolate Éclair — $6.00</option>
+            <option>Cinnamon Roll — $5.00</option>
+            <option>Custom Order</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Instructions</label>
+          <textarea class="form-textarea" placeholder="Allergies, preferences, special requests..." id="orderNotes"></textarea>
+        </div>
+        <button class="btn-primary form-submit" onclick="submitOrder()"><span>Confirm Order</span></button>
+      </div>
+      <div id="orderSuccess" class="success-msg" style="display:none;">
+        <div class="check">🥐</div>
+        <h3>Order Received!</h3>
+        <p>Thank you! We'll confirm your order within 15 minutes.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Reserve a <span>Table</span></h3>
+      <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="bookingFormWrap">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your name" id="bookName">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="you@email.com" id="bookEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" placeholder="+1 234 567 890" id="bookPhone">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="bookDate">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time</label>
+            <select class="form-select" id="bookTime">
+              <option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option>
+              <option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option>
+              <option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option>
+              <option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Guests</label>
+          <select class="form-select" id="bookGuests">
+            <option>1 Guest</option><option>2 Guests</option><option>3 Guests</option>
+            <option>4 Guests</option><option>5 Guests</option><option>6+ Guests</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Requests</label>
+          <textarea class="form-textarea" placeholder="Occasion, dietary needs, seating preferences..." id="bookNotes"></textarea>
+        </div>
+        <button class="btn-primary form-submit" onclick="submitBooking()"><span>Book Table</span></button>
+      </div>
+      <div id="bookingSuccess" class="success-msg" style="display:none;">
+        <div class="check">🌿</div>
+        <h3>Table Reserved!</h3>
+        <p>We'll see you soon! A confirmation has been sent to your email.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="cart-float" onclick="openOrderModal(null)">
+  🛒
+  <span class="cart-count" id="cartCount">0</span>
+</div>
+
+
+<div class="cart-toast" id="cartToast">
+  <span class="cart-toast-icon">✓</span>
+  <p>Added <strong id="toastItemName"></strong> to cart!</p>
+</div>
+
+<script>
+
+const products = [
+  { id:1, name:'Classic Sourdough', desc:'Tangy, chewy, and perfectly crusted. Our signature 48-hour fermented loaf.', price:'$8.50', badge:'Bestseller', img:'https://images.unsplash.com/photo-1585478259715-876ace1e80c3?w=600&q=80' },
+  { id:2, name:'Almond Croissant', desc:'Flaky butter layers filled with rich almond frangipane and topped with toasted almonds.', price:'$5.50', badge:'Popular', img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80' },
+  { id:3, name:'Blueberry Muffin', desc:'Bursting with wild blueberries and a crisp sugar-crumb topping. Baked fresh every morning.', price:'$4.00', badge:'', img:'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=600&q=80' },
+  { id:4, name:'Honey Brioche', desc:'Pillowy soft enriched bread with wildflower honey glaze and a golden, egg-washed crust.', price:'$9.00', badge:'Chef\'s Pick', img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&q=80' },
+  { id:5, name:'Raspberry Tart', desc:'Buttery shortcrust shell filled with silky vanilla custard and topped with fresh raspberries.', price:'$7.50', badge:'', img:'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600&q=80' },
+  { id:6, name:'Chocolate Éclair', desc:'Classic French pâte à choux filled with chocolate pastry cream and dark chocolate glaze.', price:'$6.00', badge:'New', img:'https://images.unsplash.com/photo-1603532648955-039310d9ed75?w=600&q=80' },
+];
+
+const categories = ['Cake', 'Muffins', 'Croissant', 'Bread', 'Tart', 'Favorite'];
+const galleryData = {
+  Cake: [
+    { img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80', label:'Celebration Cake' },
+    { img:'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600&q=80', label:'Fruit Tart' },
+    { img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80', label:'Layered Gateau' },
+    { img:'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&q=80', label:'Blueberry Cheesecake' },
+    { img:'https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=600&q=80', label:'Chocolate Fudge' },
+    { img:'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80', label:'Vanilla Sponge' },
+  ],
+  Muffins: [
+    { img:'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=600&q=80', label:'Blueberry Muffin' },
+    { img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&q=80', label:'Chocolate Chip' },
+    { img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80', label:'Banana Nut' },
+    { img:'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=600&q=80', label:'Lemon Poppy' },
+    { img:'https://images.unsplash.com/photo-1612198790700-0ef7b86770e1?w=600&q=80', label:'Red Velvet' },
+    { img:'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600&q=80', label:'Carrot Spice' },
+  ],
+  Croissant: [
+    { img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80', label:'Butter Croissant' },
+    { img:'https://images.unsplash.com/photo-1549903072-7e6e0bedb7fb?w=600&q=80', label:'Almond Croissant' },
+    { img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=600&q=80', label:'Ham & Cheese' },
+    { img:'https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=600&q=80', label:'Chocolate Croissant' },
+    { img:'https://images.unsplash.com/photo-1571141435928-6c047d4bda4e?w=600&q=80', label:'Spinach Croissant' },
+    { img:'https://images.unsplash.com/photo-1475871542158-49d73d3e052f?w=600&q=80', label:'Sesame Croissant' },
+  ],
+  Bread: [
+    { img:'https://images.unsplash.com/photo-1585478259715-876ace1e80c3?w=600&q=80', label:'Sourdough' },
+    { img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&q=80', label:'Brioche' },
+    { img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80', label:'Multigrain' },
+    { img:'https://images.unsplash.com/photo-1486887396153-fa416526c108?w=600&q=80', label:'Rye Loaf' },
+    { img:'https://images.unsplash.com/photo-1568471173242-461f0a730452?w=600&q=80', label:'Ciabatta' },
+    { img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80', label:'Focaccia' },
+  ],
+  Tart: [
+    { img:'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600&q=80', label:'Fruit Tart' },
+    { img:'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&q=80', label:'Blueberry Tart' },
+    { img:'https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=600&q=80', label:'Chocolate Tart' },
+    { img:'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80', label:'Lemon Tart' },
+    { img:'https://images.unsplash.com/photo-1549903072-7e6e0bedb7fb?w=600&q=80', label:'Custard Tart' },
+    { img:'https://images.unsplash.com/photo-1603532648955-039310d9ed75?w=600&q=80', label:'Caramel Tart' },
+  ],
+  Favorite: [
+    { img:'https://images.unsplash.com/photo-1603532648955-039310d9ed75?w=600&q=80', label:'Éclair' },
+    { img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80', label:'Opera Cake' },
+    { img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80', label:'Cinnamon Roll' },
+    { img:'https://images.unsplash.com/photo-1571141435928-6c047d4bda4e?w=600&q=80', label:'Danish Pastry' },
+    { img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&q=80', label:'Macaron' },
+    { img:'https://images.unsplash.com/photo-1612198790700-0ef7b86770e1?w=600&q=80', label:'Cannelé' },
+  ]
+};
+
+const featured = [
+  { name:'Puff Pastry', price:'$8', img:'https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=700&q=85' },
+  { name:'Glazed Doughnut', price:'$3.50', img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=700&q=85' },
+  { name:'Dark Brownies', price:'$5', img:'https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=700&q=85' },
+];
+
+const marqueeItems = ['Artisan Baked Daily','Fresh Ingredients','Heritage Recipes','Award Winning','Free Delivery Over $40','Gluten Free Options','Custom Orders Welcome','Seasonal Specials'];
+
+
+let cartCount = 0;
+
+
+function renderMarquee() {
+  const track = document.getElementById('marqueeTrack');
+  const doubled = [...marqueeItems, ...marqueeItems];
+  track.innerHTML = doubled.map(item => `
+    <div class="marquee-item"><span class="dot"></span>${item}</div>
+  `).join('');
+}
+
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="product-overlay">
+          <button class="product-quick-add" onclick="addToCart('${p.name}')">Quick Add</button>
+        </div>
+        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-footer">
+          <span class="product-price">${p.price}</span>
+          <button class="add-btn" onclick="addToCart('${p.name}')">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCategories() {
+  const tabs = document.getElementById('categoryTabs');
+  tabs.innerHTML = categories.map((cat, i) => `
+    <button class="tab-btn ${i===0?'active':''}" onclick="switchCategory('${cat}', this)">${cat}</button>
+  `).join('');
+}
+
+function renderGallery(cat) {
+  const grid = document.getElementById('galleryGrid');
+  const items = galleryData[cat] || galleryData['Cake'];
+  grid.innerHTML = items.map(item => `
+    <div class="gallery-item active">
+      <img src="${item.img}" alt="${item.label}" loading="lazy">
+      <span class="gallery-label">${item.label}</span>
+    </div>
+  `).join('');
+ 
+  setTimeout(() => {
+    grid.classList.remove('visible');
+    void grid.offsetWidth;
+    observeElements();
+    grid.classList.add('visible');
+  }, 50);
+}
+
+function switchCategory(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGallery(cat);
+}
+
+function renderFeatured() {
+  const grid = document.getElementById('featuredGrid');
+  grid.innerHTML = featured.map(f => `
+    <div class="featured-card">
+      <img src="${f.img}" alt="${f.name}" loading="lazy">
+      <div class="featured-info">
+        <div class="featured-name">${f.name}</div>
+        <div class="featured-price">${f.price}</div>
+        <button class="featured-btn" onclick="addToCart('${f.name}')">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+
+function addToCart(name) {
+  cartCount++;
+  const countEl = document.getElementById('cartCount');
+  countEl.textContent = cartCount;
+  countEl.classList.add('show');
+  document.getElementById('toastItemName').textContent = name;
+  const toast = document.getElementById('cartToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+
+function openOrderModal(e) { if(e) e.preventDefault(); document.getElementById('orderModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function openBookingModal(e) { if(e) e.preventDefault(); document.getElementById('bookingModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) closeModal(m.id); });
+});
+
+function submitOrder() {
+  const name = document.getElementById('orderName').value.trim();
+  const item = document.getElementById('orderItem').value;
+  if (!name || !item) { alert('Please fill in your name and select an item.'); return; }
+  document.getElementById('orderFormWrap').style.display = 'none';
+  document.getElementById('orderSuccess').style.display = 'block';
+  
+  setTimeout(() => {
+    document.getElementById('orderFormWrap').style.display = 'block';
+    document.getElementById('orderSuccess').style.display = 'none';
+    closeModal('orderModal');
+  }, 4000);
+}
+
+function submitBooking() {
+  const name = document.getElementById('bookName').value.trim();
+  const date = document.getElementById('bookDate').value;
+  if (!name || !date) { alert('Please fill in your name and select a date.'); return; }
+  document.getElementById('bookingFormWrap').style.display = 'none';
+  document.getElementById('bookingSuccess').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('bookingFormWrap').style.display = 'block';
+    document.getElementById('bookingSuccess').style.display = 'none';
+    closeModal('bookingModal');
+  }, 4000);
+}
+
+
+function observeElements() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+});
+
+
+const cursor = document.querySelector('.cursor');
+const follower = document.querySelector('.cursor-follower');
+let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+});
+
+function animateFollower() {
+  followerX += (mouseX - followerX) * 0.12;
+  followerY += (mouseY - followerY) * 0.12;
+  follower.style.left = followerX + 'px'; follower.style.top = followerY + 'px';
+  requestAnimationFrame(animateFollower);
+}
+animateFollower();
+
+document.querySelectorAll('a, button, .product-card, .gallery-item, .featured-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); follower.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); follower.classList.remove('hover'); });
+});
+
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobileMenu() {
+  hamburger.classList.remove('active');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const heroBg = document.getElementById('heroBg');
+  if (heroBg) heroBg.style.transform = `scale(1) translateY(${scrollY * 0.3}px)`;
+});
+
+
+setTimeout(() => {
+  document.getElementById('heroBg').classList.add('active');
+}, 100);
+
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1800);
+});
+
+
+renderMarquee();
+renderProducts();
+renderCategories();
+renderGallery('Cake');
+renderFeatured();
+setTimeout(observeElements, 200);
+
+
+const today = new Date().toISOString().split('T')[0];
+const bookDateInput = document.getElementById('bookDate');
+if(bookDateInput) bookDateInput.min = today;
+</script>
+</body>
+</html>
