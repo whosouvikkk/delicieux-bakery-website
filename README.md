@@ -60,7 +60,7 @@ delicieux-bakery-website/
 ⚡ Installation & Setup
 
 1. Clone the repo:
-git clone https://github.com/YOUR_USERNAME/delicieux-bakery-website.git
+git clone
 
 2. Navigate:
 cd delicieux-bakery-website
